@@ -4,3 +4,4 @@ target/
 # intellij files
 .idea/
 *.iml
+/bin/
