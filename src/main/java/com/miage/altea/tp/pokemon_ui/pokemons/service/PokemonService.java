@@ -2,10 +2,11 @@ package com.miage.altea.tp.pokemon_ui.pokemons.service;
 
 import java.util.List;
 
-import com.miage.altea.tp.pokemon_ui.pokemons.bo.Pokemon;
+import com.miage.altea.tp.pokemon_ui.pokemons.vo.PokemonView;
 
 public interface PokemonService {
 
-    List<Pokemon> listPokemons();
+    List<PokemonView> listPokemons();
+    PokemonView getPokemonType(int pokedexId);
 
 }

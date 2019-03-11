@@ -5,3 +5,5 @@ target/
 .idea/
 *.iml
 /bin/
+/.classpath
+/.project

@@ -15,8 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.miage.altea.tp.pokemon_ui.controller.PokemonController;
-import com.miage.altea.tp.pokemon_ui.pokemons.bo.Pokemon;
 import com.miage.altea.tp.pokemon_ui.pokemons.service.PokemonService;
+import com.miage.altea.tp.pokemon_ui.pokemons.vo.PokemonView;
 
 public class PokemonControllerTest {
     @Test
@@ -28,14 +28,14 @@ public class PokemonControllerTest {
     void pokemons_shouldReturnAModelAndView() {
         var pokemonTypeService = mock(PokemonService.class);
 
-        when(pokemonTypeService.listPokemons()).thenReturn(List.of(new Pokemon(), new Pokemon()));
+        when(pokemonTypeService.listPokemons()).thenReturn(List.of(new PokemonView(), new PokemonView()));
 
         var pokemonTypeController = new PokemonController();
         pokemonTypeController.setPokemonService(pokemonTypeService);
         var modelAndView = pokemonTypeController.pokedex();
 
         assertEquals("pokedex", modelAndView.getViewName());
-        var pokemons = (List<Pokemon>)modelAndView.getModel().get("pokemonList");
+        var pokemons = (List<PokemonView>)modelAndView.getModel().get("pokemonList");
         assertEquals(2, pokemons.size());
         verify(pokemonTypeService).listPokemons();
     }

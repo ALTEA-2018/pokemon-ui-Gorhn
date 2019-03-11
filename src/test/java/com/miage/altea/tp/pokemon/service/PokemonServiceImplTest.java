@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.miage.altea.tp.pokemon_ui.pokemons.bo.Pokemon;
+import com.miage.altea.tp.pokemon_ui.pokemons.bo.PokemonType;
 import com.miage.altea.tp.pokemon_ui.pokemons.service.PokemonServiceImpl;
 
 public class PokemonServiceImplTest {
@@ -26,19 +26,19 @@ public class PokemonServiceImplTest {
         pokemonServiceImpl.setRestTemplate(restTemplate);
         pokemonServiceImpl.setPokemonTypeServiceUrl(url);
 
-        var pikachu = new Pokemon();
+        var pikachu = new PokemonType();
         pikachu.setName("pikachu");
         pikachu.setId(25);
 
         var expectedUrl = "http://localhost:8080/pokemon/";
-        when(restTemplate.getForObject(expectedUrl, Pokemon[].class)).thenReturn(new Pokemon[]{pikachu});
+        when(restTemplate.getForObject(expectedUrl, PokemonType[].class)).thenReturn(new PokemonType[]{pikachu});
 
         var pokemons = pokemonServiceImpl.listPokemons();
 
         assertNotNull(pokemons);
         assertEquals(1, pokemons.size());
 
-        verify(restTemplate).getForObject(expectedUrl, Pokemon[].class);
+        verify(restTemplate).getForObject(expectedUrl, PokemonType[].class);
     }
 
     @Test
