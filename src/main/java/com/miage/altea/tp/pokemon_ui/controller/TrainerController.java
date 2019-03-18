@@ -1,6 +1,8 @@
 package com.miage.altea.tp.pokemon_ui.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,7 +22,8 @@ public class TrainerController {
 	@GetMapping("/trainers")
 	public ModelAndView pokedex(){
 		var result = new ModelAndView("trainers");
-        result.addObject("trainerList", service.getOtherTrainers());
+		UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        result.addObject("trainerList", service.getOtherTrainers(principal.getUsername()));
         return result;
 	}
 	

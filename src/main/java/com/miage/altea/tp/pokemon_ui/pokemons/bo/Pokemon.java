@@ -10,8 +10,8 @@ public class Pokemon {
 	
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; }
-	public int getPokemonType() { return pokedexId; }
-	public void setPokemonType(int pokedexId) { this.pokedexId = pokedexId; }
+	public int getPokedexId() { return pokedexId; }
+	public void setPokedexId(int pokedexId) { this.pokedexId = pokedexId; }
 	public int getLevel() { return level; }
 	public void setLevel(int level) { this.level = level; }
 

@@ -5,14 +5,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.miage.altea.tp.pokemon_ui.pokemons.service.PokemonService;
 import com.miage.altea.tp.pokemon_ui.pokemons.vo.PokemonView;
-import com.miage.altea.tp.pokemon_ui.pokemons.vo.TrainerView;
 import com.miage.altea.tp.pokemon_ui.trainers.bo.Trainer;
+import com.miage.altea.tp.pokemon_ui.trainers.vo.TrainerView;
 
 @Service
 public class TrainerServiceImpl implements TrainerService {
@@ -28,6 +29,7 @@ public class TrainerServiceImpl implements TrainerService {
 	}
 	
 	@Autowired
+	@Qualifier("trainerApiRestTemplate")
     public void setRestTemplate(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -37,22 +39,45 @@ public class TrainerServiceImpl implements TrainerService {
         this.trainerServiceUrl = trainerServiceUrl;
     }
 	
-	@Override
-	public List<Trainer> getOtherTrainers() {
-		Trainer[] objects = restTemplate.getForObject(trainerServiceUrl+"/trainers/", Trainer[].class);
-        List<Trainer> trainers = Arrays.asList(objects).stream().sorted((t1, t2) -> t1.getName().compareTo(t2.getName())).collect(Collectors.toList());
-        trainers.stream().map(trainer -> {
-        	TrainerView trainerView = new TrainerView();
-        	trainer.getTeam().stream().forEach(pokemon -> { 
-        		PokemonView pokemonView = pokemonService.getPokemonType(pokemon.getPokemonType());
-        		pokemonView.setLevel(pokemon.getLevel());
-        		trainerView.addToTeam(pokemonView);
-        	});
-        	return trainerView;
-        }).collect(Collectors.toList());
-        return trainers;
+	private TrainerView trainerToView(Trainer trainer) {
+		TrainerView trainerView = new TrainerView();
+    	trainerView.setName(trainer.getName());
+    	trainerView.setPassword(trainer.getPassword());
+    	trainer.getTeam().stream().forEach(pokemon -> { 
+    		PokemonView pokemonView = pokemonService.getPokemonType(pokemon.getPokedexId());
+    		pokemonView.setLevel(pokemon.getLevel());
+    		trainerView.addToTeam(pokemonView);
+    	});
+    	return trainerView;
 	}
 	
+	@Override
+	public List<TrainerView> getAllTrainers() {
+		return getOtherTrainers("");
+	}
 	
+	@Override
+	public List<TrainerView> getOtherTrainers(String trainerName) {
+		Trainer[] objects = restTemplate.getForObject(trainerServiceUrl+"/trainers/", Trainer[].class);
+        List<Trainer> trainers = Arrays.asList(objects).stream()
+        		.sorted((t1, t2) -> t1.getName().compareTo(t2.getName()))
+        		.filter(trainer -> trainerName == null || "".equals(trainerName) ? 
+        				true : 
+        				!trainer.getName().equals(trainerName))
+        		.collect(Collectors.toList());
+        List<TrainerView> result = trainers.stream()
+        		.map(trainer -> trainerToView(trainer))
+        		.collect(Collectors.toList());
+        return result;
+	}
 
+	@Override
+	public TrainerView getByName(String trainerName) {
+		Trainer object = restTemplate.getForObject(trainerServiceUrl+"/trainers/"+trainerName, Trainer.class);
+		if (object != null) {
+			return trainerToView(object);
+		}
+		return null;
+	}
+	
 }

@@ -13,8 +13,8 @@ public class PokemonView {
 		this.type = pokemonType;
 	}
 	
-	public PokemonType getPokemonType() { return type; }
-	public void setPokemonType(PokemonType type) { this.type = type; }
+	public PokemonType getType() { return type; }
+	public void setType(PokemonType type) { this.type = type; }
 	public int getLevel() { return level; }
 	public void setLevel(int level) { this.level = level; }
 
